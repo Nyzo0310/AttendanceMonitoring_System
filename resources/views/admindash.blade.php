@@ -16,6 +16,10 @@
         }
 
         /* Navbar Styles */
+         .navbar .btn i.fas.fa-bars {
+                color: white; /* Ensures the icon color is white */
+                font-size: 1.5rem; /* Adjust the size if necessary */
+        }
         .navbar {
             background: linear-gradient(45deg, #007bff, #0056b3);
             padding: 10px 20px;
@@ -294,47 +298,47 @@
         <h2>Dashboard</h2>
         <!-- KPI Cards -->
         <div class="row g-3 kpi-cards">
-            <div class="col-md-3">
-                <div class="card bg-blue">
-                    <div class="card-content">
-                        <h3 class="card-title">0</h3>
-                        <p class="card-text">Total Employees</p>
-                    </div>
-                    <i class="fas fa-users card-icon"></i>
-                    <a href="#">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
+    <div class="col-md-3">
+        <div class="card bg-blue">
+            <div class="card-content">
+                <h3 class="card-title">{{ $totalEmployees }}</h3>
+                <p class="card-text">Total Employees</p>
             </div>
-            <div class="col-md-3">
-                <div class="card bg-green">
-                    <div class="card-content">
-                        <h3 class="card-title">0.00%</h3>
-                        <p class="card-text">On Time Percentage</p>
-                    </div>
-                    <i class="fas fa-chart-pie card-icon"></i>
-                    <a href="#">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-yellow">
-                    <div class="card-content">
-                        <h3 class="card-title">0</h3>
-                        <p class="card-text">On Time Today</p>
-                    </div>
-                    <i class="fas fa-clock card-icon"></i>
-                    <a href="#">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card bg-red">
-                    <div class="card-content">
-                        <h3 class="card-title">0</h3>
-                        <p class="card-text">Late Today</p>
-                    </div>
-                    <i class="fas fa-exclamation-triangle card-icon"></i>
-                    <a href="#">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
-            </div>
+            <i class="fas fa-users card-icon"></i>
+            <a href="{{ route('admin.addEmployeeList') }}">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-green">
+            <div class="card-content">
+                <h3 class="card-title">{{ number_format($onTimePercentage, 2) }}%</h3>
+                <p class="card-text">On Time Percentage</p>
+            </div>
+            <i class="fas fa-chart-pie card-icon"></i>
+            <a href="{{ route('admin.attendance') }}">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-yellow">
+            <div class="card-content">
+                <h3 class="card-title">{{ $onTimeToday }}</h3>
+                <p class="card-text">On Time Today</p>
+            </div>
+            <i class="fas fa-clock card-icon"></i>
+            <a href="{{ route('admin.attendanceDash') }}">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-red">
+            <div class="card-content">
+                <h3 class="card-title">{{ $lateToday }}</h3>
+                <p class="card-text">Late Today</p>
+            </div>
+            <i class="fas fa-exclamation-triangle card-icon"></i>
+            <a href="{{ route('admin.attendanceDash') }}">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+</div>
 
         <!-- Monthly Attendance Report -->
         <div class="mt-5" style="height: calc(100vh - 200px);">

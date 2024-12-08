@@ -13,6 +13,13 @@
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
+            background-color: #f8f9fa;
+        }
+
+        h2 {
+            font-family: 'Georgia', serif;
+            font-weight: 600;
+            margin-bottom: 20px;
         }
 
         /* Navbar Styles */
@@ -45,6 +52,7 @@
 
         .navbar .username i {
             margin-right: 5px;
+            font-size: 1.2rem;
         }
 
         /* Sidebar Styles */
@@ -79,9 +87,8 @@
             color: #ffffff;
             padding: 15px;
             font-weight: bold;
-            width: 100%;
-            margin: 0;
-            box-sizing: border-box;
+            margin-bottom: 10px;
+            border-radius: 5px;
         }
 
         /* Sidebar Menu Link */
@@ -117,90 +124,46 @@
 
         /* Main Content Styles */
         .main-content {
-            font-family: 'Georgia', serif;
             padding: 20px;
-            background-color: #f8f9fa;
             min-height: 100vh;
         }
 
         /* Table Styles */
         .table-wrapper {
-            background-color: #ffffff;
+            background-color: transparent;
             border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            margin-top: 20px;
         }
-        .modal {
-        display: none; /* Hidden by default */
-        position: fixed;
-        z-index: 1; /* Sit on top */
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
-    }
 
-    /* Modal content */
-    .modal-content {
-        background-color: #fefefe;
-        margin: 15% auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%; /* Could be more or less, depending on your needs */
-        max-width: 500px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
 
-    /* Close button */
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-    }
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 10px;
+        }
+        .modal-content h2 {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
 
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
+        select, input[type="text"], input[type="number"], input[type="date"] {
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
 
-    /* Form elements */
-    form {
-        display: flex;
-        flex-direction: column;
-    }
-
-    label {
-        font-size: 16px;
-        margin-bottom: 5px;
-    }
-
-    select {
-        padding: 8px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-
-    button {
-        padding: 10px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    button:hover {
-        background-color: #0056b3;
-    }
+        button {
+            transition: background-color 0.3s;
+        }
     </style>
 </head>
 <body>
@@ -234,11 +197,11 @@
                 <div class="user-info text-center mb-4">
                     @auth
                         <img src="{{ asset('path_to_user_icon.png') }}" alt="User Icon" class="rounded-circle" width="70">
-                        <h5>{{ Auth::user()->username }}</h5>
+                        <h5 class="mt-2">{{ Auth::user()->username }}</h5>
                         <span><i class="fas fa-circle text-success"></i> Online</span>
                     @else
                         <img src="{{ asset('path_to_guest_icon.png') }}" alt="Guest Icon" class="rounded-circle" width="70">
-                        <h5>Guest</h5>
+                        <h5 class="mt-2">Guest</h5>
                         <span><i class="fas fa-circle text-secondary"></i> Offline</span>
                     @endauth
                 </div>
@@ -254,7 +217,7 @@
                 </a>
                 <div class="collapse" id="employeesSubmenu">
                     <ul class="list-unstyled ps-4">
-                    <li><a href="{{ route('admin.addEmployeeList') }}">Employee List</a></li>
+                        <li><a href="{{ route('admin.addEmployeeList') }}">Employee List</a></li>
                         <li><a href="{{ route('admin.overtime') }}">Overtime</a></li>
                         <li><a href="{{ route('admin.cashadvance') }}">Cash Advance</a></li>
                         <li><a href="{{ route('admin.schedule') }}">Schedules</a></li>
@@ -267,99 +230,207 @@
                 <div class="sidebar-section">Printables</div>
                 <a href="{{ route('admin.payroll') }}"><i class="fas fa-print"></i> Payroll</a>
                 <a href="{{ route('admin.schedule') }}"><i class="fas fa-clock"></i> Schedule</a>
-                </div>
             </div>
         </div>
+    </div>
 
     <!-- Main Content -->
     <div class="main-content">
         <h2>Employee List</h2>
         <div class="table-wrapper">
-           <button class="btn btn-primary mb-3" onclick="window.location.href='/Employee';">
-    <i class="fas fa-plus"></i> New
-</button>
 
-            <div class="table-responsive">
-            <table>
-    <thead>
-        <tr>
-            <th>Employee ID</th>
-            <th>Photo</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Address</th>
-            <th>Birthdate</th>
-            <th>Contact No</th>
-            <th>Gender</th>
-            <th>Position</th>
-            <th>Statutory Benefits</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($employees as $employee)
-            <tr>
-                <td>{{ $employee->employee_id }}</td>
-                <td></td>
-                <td>{{ $employee->first_name }}</td>
-                <td>{{ $employee->last_name }}</td>
-                <td>{{ $employee->address }}</td>
-                <td>{{ $employee->birthdate }}</td>
-                <td>{{ $employee->contact_no }}</td>
-                <td>{{ $employee->gender }}</td>
-                <td>{{ $employee->position?->position_name ?? 'N/A' }}</td>
-                <td>{{ $employee->statutory_benefits }}</td>
-                <td>
-                    <button onclick="openPositionModal({{ $employee->employee_id }})">Edit</button>
-                </td>
-                
+            <!-- New Button triggers the modal -->
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+                <i class="fas fa-plus"></i> New
+            </button>
 
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+            @if(session('success'))
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <script>
+                    Swal.fire({
+                        title: 'Success!',
+                        text: "{{ session('success') }}",
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    })
+                </script>
+            @endif
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-bordered align-middle">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Employee ID</th>
+                                    <th>Photo</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Address</th>
+                                    <th>Birthdate</th>
+                                    <th>Contact No</th>
+                                    <th>Gender</th>
+                                    <th>Position</th>
+                                    <th>Statutory Benefits</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(count($employees) === 0)
+                                    <tr>
+                                        <td colspan="11" class="text-center">No data available in the table</td>
+                                    </tr>
+                                @else
+                                    @foreach($employees as $employee)
+                                        <tr>
+                                            <td>{{ $employee->employee_id }}</td>
+                                            <td></td>
+                                            <td>{{ $employee->first_name }}</td>
+                                            <td>{{ $employee->last_name }}</td>
+                                            <td>{{ $employee->address }}</td>
+                                            <td>{{ $employee->birthdate }}</td>
+                                            <td>{{ $employee->contact_no }}</td>
+                                            <td>{{ $employee->gender }}</td>
+                                            <td>{{ $employee->position?->position_name ?? 'N/A' }}</td>
+                                            <td>{{ $employee->statutory_benefits }}</td>
+                                            <td class="d-flex">
+                                                <!-- Edit Button: sets employee_id and opens modal -->
+                                                <button 
+                                                    class="btn btn-success btn-sm me-1"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#positionModal"
+                                                    onclick="document.getElementById('employeeId').value = {{ $employee->employee_id }};">
+                                                    <i class="fas fa-edit me-1"></i> Edit
+                                                </button>
+
+                                                <!-- Delete Button -->
+                                                <form action="{{ route('employee.delete', $employee->employee_id) }}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">
+                                                        <i class="fas fa-trash-alt me-1"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
+                        </table> 
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div id="positionModal" class="modal">
+    
+
+    <!-- Add Employee Modal -->
+    <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <span class="close" onclick="closePositionModal()">&times;</span>
-            <h2>Assign Position</h2>
-            <form id="assignPositionForm" action="{{ route('assign.position') }}" method="post">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="addEmployeeModalLabel">Add Employee</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form action="/add" method="POST" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="employee_id" id="employeeId">
-                <label for="position">Position Title:</label>
-                <select id="position" name="position" required>
-                    <option value="">Select Position</option>
-                    <option value="1">Warehouse</option>
-                    <option value="2">Packaging</option>
-                    <option value="4">Marination</option>
-                    <option value="5">GMP</option>
-                    <option value="3">Receiving</option>
-                </select>
-                <br><br>
-                <button type="submit">Assign Position</button>
+                <div class="mb-3">
+                    <label for="first_name" class="form-label fw-bold">First Name:</label>
+                    <input type="text" class="form-control" name="first_name" id="first_name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="last_name" class="form-label fw-bold">Last Name:</label>
+                    <input type="text" class="form-control" name="last_name" id="last_name" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="address" class="form-label fw-bold">Address:</label>
+                    <input type="text" class="form-control" name="address" id="address" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="birthdate" class="form-label fw-bold">Birth Date:</label>
+                    <input type="date" class="form-control" name="birthdate" id="birthdate" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="contact_no" class="form-label fw-bold">Contact:</label>
+                    <input type="tel" class="form-control" name="contact_no" id="contact_no" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="gender" class="form-label fw-bold">Gender:</label>
+                    <select class="form-select" id="gender" name="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="statutory_benefits" class="form-label fw-bold">Statutory benefits:</label>
+                    <select class="form-select" id="statutory_benefits" name="statutory_benefits" required>
+                        <option value="">Select Benefits</option>
+                        <option value="SSS">SSS</option>
+                        <option value="Pag-Ibig">Pag-Ibig</option>
+                        <option value="PhilHealth">PhilHealth</option>
+                        <option value="SSS,Pag-Ibig">SSS,Pag-Ibig</option>
+                        <option value="SSS,PhilHealth">SSS,PhilHealth</option>
+                        <option value="SSS,Pag-Ibig,PhilHealth">SSS,Pag-Ibig,PhilHealth</option>
+                        <option value="Pag-Ibig,PhilHealth">Pag-Ibig,PhilHealth</option>
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="photo" class="form-label fw-bold">ID Image:</label>
+                    <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                </div>
+
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+
             </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Position Modal -->
+    <div class="modal fade" id="positionModal" tabindex="-1" aria-labelledby="positionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="modal-title" id="positionModalLabel">Assign Position</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="assignPositionForm" action="{{ route('assign.position') }}" method="post">
+                    @csrf
+                    <input type="hidden" name="employee_id" id="employeeId">
+                    <div class="mb-3">
+                        <label for="position" class="form-label fw-bold">Position Title:</label>
+                        <select id="position" name="position" class="form-select" required>
+                            <option value="">Select Position</option>
+                            <option value="1">Warehouse</option>
+                            <option value="2">Packaging</option>
+                            <option value="4">Marination</option>
+                            <option value="5">GMP</option>
+                            <option value="3">Receiving</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Assign Position</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-    
-        </div>
-    </div>
-    
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-       // Function to open the modal and set employee_id
-function openPositionModal(employeeId) {
-    document.getElementById('employeeId').value = employeeId;
-    document.getElementById('positionModal').style.display = 'block';
-}
-
-// Function to close the modal
-function closePositionModal() {
-    document.getElementById('positionModal').style.display = 'none';
-}
-
-    </script>
 </body>
 </html>

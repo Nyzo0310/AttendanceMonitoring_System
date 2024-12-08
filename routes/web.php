@@ -17,6 +17,9 @@ Route::get('/payroll',[Display::class,'Display8'])->name('admin.payroll');
 Route::get('/deduction',[Display::class,'Display9'])->name('admin.deduction');
 Route::get('/cashadvance',[Display::class,'Display10'])->name('admin.cashadvance');
 Route::get('/login',[Display::class,'Display11'])->name('admin.login');
+Route::delete('/employee/{id}', [Display::class, 'deleteEmployee'])->name('employee.delete');
+
+Route::get('/addEmployeeList', [Display::class, 'DisplayAddEmployeeList'])->name('admin.addEmployeeList');
 
 Route::post('/loginAuth', [Display::class,'loginAuth'])->name('admin.loginAuth');
 Route::post('/Submit', [Display::class,'Submit'])->name('admin.submit');
