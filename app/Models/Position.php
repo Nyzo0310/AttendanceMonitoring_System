@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models;  // Make sure this matches the directory structure
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +13,7 @@ class Position extends Model
 
     protected $fillable = [
         'position_name',
+        'rate_per_hour'
     ];
 
     public function employees()

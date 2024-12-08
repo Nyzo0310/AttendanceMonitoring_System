@@ -200,37 +200,44 @@
 </head>
 <body>
 
-    @if(session('login_success'))
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Login Successful',
-                text: '{{ session('login_success') }}',
-                showConfirmButton: false,
-                timer: 1500
-            });
-        </script>
-    @endif
+@if(session('login_success'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Login Successful',
+            text: "{{ session('login_success') }}",
+            showConfirmButton: false,
+            timer: 1500
+        });
+    </script>
+@endif
 
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="menu-and-logo">
-            <a class="navbar-brand" href="#">Mclons Manpower Services</a>
-            <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-        <div class="username">
-            <i class="fas fa-user-circle"></i>
-            @auth
-                <span>{{ Auth::user()->username }}</span>
-            @else
-                <span>Guest</span>
-            @endauth
-        </div>
-    </nav>
+   <!-- Navbar -->
+<nav class="navbar">
+    <div class="menu-and-logo">
+        <a class="navbar-brand" href="#">Mclons Manpower Services</a>
+        <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    <div class="username">
+        <i class="fas fa-user-circle"></i>
+        @auth
+            <span>{{ Auth::user()->username }}</span>  <!-- Display username -->
+            <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit" class="btn btn-danger btn-sm ms-3">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </form>
+        @else
+            <span>Guest</span>
+        @endauth
+    </div>
+</nav>
+
 
     <!-- Offcanvas Sidebar -->
     <div class="offcanvas offcanvas-start" id="offcanvasMenu">
@@ -242,16 +249,17 @@
             <div class="sidebar">
                 <!-- User Info -->
                 <div class="user-info text-center mb-4">
-                    @auth
-                        <img src="{{ asset('path_to_user_icon.png') }}" alt="User Icon" class="rounded-circle" width="70">
-                        <h5>{{ Auth::user()->username }}</h5>
-                        <span><i class="fas fa-circle text-success"></i> Online</span>
-                    @else
-                        <img src="{{ asset('path_to_guest_icon.png') }}" alt="Guest Icon" class="rounded-circle" width="70">
-                        <h5>Guest</h5>
-                        <span><i class="fas fa-circle text-secondary"></i> Offline</span>
-                    @endauth
-                </div>
+    @auth
+        <img src="{{ asset('path_to_user_icon.png') }}" alt="User Icon" class="rounded-circle" width="70">
+        <h5>{{ Auth::user()->username }}</h5>  <!-- Display username here -->
+        <span><i class="fas fa-circle text-success"></i> Online</span>
+    @else
+        <img src="{{ asset('path_to_guest_icon.png') }}" alt="Guest Icon" class="rounded-circle" width="70">
+        <h5>Guest</h5>
+        <span><i class="fas fa-circle text-secondary"></i> Offline</span>
+    @endauth
+    
+</div>
 
                 <div class="sidebar-section">Reports</div>
                 <a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
@@ -350,23 +358,41 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        // Pass the attendanceCounts data to JavaScript
+        const attendanceData = @json($attendanceCounts);
+    
+        // Labels for months
+        const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+        // Initialize data arrays for on-time and late counts
+        const ontimeData = new Array(12).fill(0);
+        const lateData = new Array(12).fill(0);
+    
+        // Populate the data arrays
+        attendanceData.forEach(data => {
+            const monthIndex = data.month - 1; // Convert month to zero-based index
+            ontimeData[monthIndex] = data.ontime || 0;
+            lateData[monthIndex] = data.late || 0;
+        });
+    
+        // Create the chart
         const ctx = document.getElementById('attendanceChart').getContext('2d');
         const attendanceChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                labels: labels,
                 datasets: [
                     {
-                        label: 'Ontime',
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                        backgroundColor: 'rgba(40, 167, 69, 0.8)'
+                        label: 'On-time',
+                        data: ontimeData,
+                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
                     },
                     {
                         label: 'Late',
-                        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                        backgroundColor: 'rgba(108, 117, 125, 0.8)'
-                    }
-                ]
+                        data: lateData,
+                        backgroundColor: 'rgba(108, 117, 125, 0.8)',
+                    },
+                ],
             },
             options: {
                 responsive: true,
@@ -375,20 +401,16 @@
                         position: 'top',
                     },
                 },
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var toggleElements = document.querySelectorAll('[data-bs-toggle="collapse"]');
-
-            toggleElements.forEach(function (element) {
-                element.addEventListener('click', function () {
-                    var icon = element.querySelector('.fa-chevron-right');
-                    if (icon) {
-                        icon.classList.toggle('rotate');
-                    }
-                });
-            });
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 300, // Set the maximum range of the y-axis
+                        ticks: {
+                            stepSize: 50, // Optional: Adjust the step size between ticks
+                        },
+                    },
+                },
+            },
         });
     </script>
 </body>

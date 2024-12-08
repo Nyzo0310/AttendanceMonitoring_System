@@ -21,3 +21,8 @@ Route::get('/login',[Display::class,'Display11'])->name('admin.login');
 Route::post('/loginAuth', [Display::class,'loginAuth'])->name('admin.loginAuth');
 Route::post('/Submit', [Display::class,'Submit'])->name('admin.submit');
 Route::post('/add', [Display::class,'add'])->name('admin.add');
+Route::post('/saveposition', [Display::class,'saveposition'])->name('admin.saveposition');
+Route::post('/assign', [Display::class, 'assignPosition'])->name('assign.position');
+Route::post('/AddDeduction', [Display::class, 'AddDeduction']);
+Route::post('/AddSched', [Display::class, 'AddSched']);
+Route::middleware('auth')->get('/dashboard', [Display::class, 'Display1']);

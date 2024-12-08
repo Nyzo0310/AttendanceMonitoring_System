@@ -130,6 +130,77 @@
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
         }
+        .modal {
+        display: none; /* Hidden by default */
+        position: fixed;
+        z-index: 1; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+    }
+
+    /* Modal content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%; /* Could be more or less, depending on your needs */
+        max-width: 500px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Close button */
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Form elements */
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    select {
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    button {
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
     </style>
 </head>
 <body>
@@ -204,31 +275,91 @@
     <div class="main-content">
         <h2>Employee List</h2>
         <div class="table-wrapper">
-            <button class="btn btn-primary mb-3"><i class="fas fa-plus"></i> New</button>
+           <button class="btn btn-primary mb-3" onclick="window.location.href='/Employee';">
+    <i class="fas fa-plus"></i> New
+</button>
+
             <div class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Employee ID</th>
-                            <th>Photo</th>
-                            <th>Name</th>
-                            <th>Position</th>
-                            <th>Schedule</th>
-                            <th>Member Since</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="7" class="text-center">No data available in table</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <table>
+    <thead>
+        <tr>
+            <th>Employee ID</th>
+            <th>Photo</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Address</th>
+            <th>Birthdate</th>
+            <th>Contact No</th>
+            <th>Gender</th>
+            <th>Position</th>
+            <th>Statutory Benefits</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($employees as $employee)
+            <tr>
+                <td>{{ $employee->employee_id }}</td>
+                <td></td>
+                <td>{{ $employee->first_name }}</td>
+                <td>{{ $employee->last_name }}</td>
+                <td>{{ $employee->address }}</td>
+                <td>{{ $employee->birthdate }}</td>
+                <td>{{ $employee->contact_no }}</td>
+                <td>{{ $employee->gender }}</td>
+                <td>{{ $employee->position?->position_name ?? 'N/A' }}</td>
+                <td>{{ $employee->statutory_benefits }}</td>
+                <td>
+                    <button onclick="openPositionModal({{ $employee->employee_id }})">Edit</button>
+                </td>
+                
+
+            </tr>
+        @endforeach
+    </tbody>
+</table>
             </div>
         </div>
     </div>
-
+    <div id="positionModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePositionModal()">&times;</span>
+            <h2>Assign Position</h2>
+            <form id="assignPositionForm" action="{{ route('assign.position') }}" method="post">
+                @csrf
+                <input type="hidden" name="employee_id" id="employeeId">
+                <label for="position">Position Title:</label>
+                <select id="position" name="position" required>
+                    <option value="">Select Position</option>
+                    <option value="1">Warehouse</option>
+                    <option value="2">Packaging</option>
+                    <option value="4">Marination</option>
+                    <option value="5">GMP</option>
+                    <option value="3">Receiving</option>
+                </select>
+                <br><br>
+                <button type="submit">Assign Position</button>
+            </form>
+        </div>
+    </div>
+    
+        </div>
+    </div>
+    
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+       // Function to open the modal and set employee_id
+function openPositionModal(employeeId) {
+    document.getElementById('employeeId').value = employeeId;
+    document.getElementById('positionModal').style.display = 'block';
+}
+
+// Function to close the modal
+function closePositionModal() {
+    document.getElementById('positionModal').style.display = 'none';
+}
+
+    </script>
 </body>
 </html>

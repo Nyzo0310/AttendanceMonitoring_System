@@ -184,15 +184,15 @@
                 </a>
                 <div class="collapse" id="employeesSubmenu">
                     <ul class="list-unstyled ps-4">
-                        <li><a href="{{ route('admin.employees.list') }}">Employee List</a></li>
-                        <li><a href="{{ route('admin.employees.overtime') }}">Overtime</a></li>
-                        <li><a href="{{ route('admin.employees.cash_advance') }}">Cash Advance</a></li>
-                        <li><a href="{{ route('admin.employees.schedules') }}">Schedules</a></li>
+                        <li><a href="/addEmployeeList">Employee List</a></li>
+                        <li><a href="/overtime">Overtime</a></li>
+                        <li><a href="/cashadvance">Cash Advance</a></li>
+                        <li><a href="/schedule">Schedules</a></li>
                     </ul>
                 </div>
 
-                <a href="{{ route('admin.deductions') }}"><i class="fas fa-dollar-sign"></i> Deductions</a>
-                <a href="{{ route('admin.positions') }}"><i class="fas fa-briefcase"></i> Positions</a>
+                <a href="/deduction"><i class="fas fa-dollar-sign"></i> Deductions</a>
+                <a href="/addEmployeeList"><i class="fas fa-briefcase"></i> Positions</a>
 
                 <div class="sidebar-section">Printables</div>
                 <a href="#"><i class="fas fa-print"></i> Payroll</a>
@@ -205,7 +205,11 @@
     <div class="main-content">
         <h2>Position</h2>
         <div class="table-wrapper">
-            <button class="btn btn-primary mb-3"><i class="fas fa-plus"></i> New</button>
+            <!-- Button to trigger modal -->
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addPositionModal">
+            <i class="fas fa-plus"></i> New
+        </button>
+
             <div class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead>
@@ -216,6 +220,14 @@
                         </tr>
                     </thead>
                     <tbody>
+                    @foreach($position as $positions)
+                    <tr>
+                        <td>{{ $positions->position_name }}</td>
+                            <td>{{ $positions->rate_per_hour }}</td>
+                        <td></td>
+                    </tr>
+                    @endforeach
+
                         <tr>
                             <td colspan="3" class="text-center">No data available in table</td>
                         </tr>
@@ -224,6 +236,38 @@
             </div>
         </div>
     </div>
+    <!-- Modal Structure -->
+<div class="modal fade" id="addPositionModal" tabindex="-1" aria-labelledby="addPositionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPositionModalLabel">Add New Position</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form inside the modal -->
+                <form action="{{ route('admin.saveposition') }}" method="POST">
+    @csrf  <!-- Include CSRF token for form submission -->
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="position_name">Position Name</label>
+            <input type="text" class="form-control" id="position_name" name="position_name" required>
+        </div>
+        <div class="form-group">
+            <label for="rate_per_hour">Rate Per Hour</label>
+            <input type="text" class="form-control" id="rate_per_hour" name="rate_per_hour" required>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>

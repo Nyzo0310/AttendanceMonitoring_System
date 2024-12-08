@@ -201,52 +201,67 @@
         </div>
 
     <!-- Main Content for Deduction Management -->
-    <div class="main-content">
-        <h2>Deduction</h2>
-        <div class="table-wrapper">
-            <button class="btn btn-primary mb-3"><i class="fas fa-plus"></i> New</button>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th>Amount</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="3" class="text-center">No data available in table</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+<div class="main-content container mt-5">
+    <h2>Deduction Management</h2>
+    <div class="table-wrapper">
+        <!-- Button to Open Modal -->
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#deductionModal">
+            <i class="fas fa-plus"></i> New
+        </button>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($deduction as $deduction)
+                    <tr>
+                        <td>{{$deduction -> deduction_type}}</td>
+                        <td>{{$deduction -> amount}}</td>
+                        <td colspan="3" class="text-center">No data available in table</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 
-    <!-- Main Content for Position Management -->
-    <div class="main-content">
-        <h2>Position Management</h2>
-        <div class="table-wrapper">
-            <button class="btn btn-primary mb-3"><i class="fas fa-plus"></i> New</button>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Position Title</th>
-                            <th>Rate Per Hour</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="3" class="text-center">No data available in table</td>
-                        </tr>
-                    </tbody>
-                </table>
+<!-- Modal for Adding Deduction -->
+<div id="deductionModal" class="modal fade" tabindex="-1" aria-labelledby="deductionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deductionModalLabel">Add New Deduction</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="AddDeduction" method="POST">
+                    @csrf
+                    <!-- Deduction Description -->
+                    <div class="mb-3">
+                        <label for="deduction_type" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="deduction_type" name="deduction_type" required>
+                    </div>
+                    <!-- Deduction Amount -->
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="amount" name="amount" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Deduction</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>

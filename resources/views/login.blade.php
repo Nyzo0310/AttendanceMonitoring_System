@@ -9,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* Same styles as before */
         body {
             background: url("/images/Loginbg.jpg.jpg") no-repeat center center fixed;
             background-size: cover;
@@ -34,10 +33,6 @@
             z-index: -1;
         }
 
-        h1, h2, label {
-            font-family: 'Georgia', serif;
-        }
-
         .main-container {
             width: 100%;
             display: flex;
@@ -55,25 +50,12 @@
             width: 320px;
             margin-top: 20px;
             text-align: center;
-            opacity: 0;
-            animation: fade-in 1.5s ease-in-out forwards;
-        }
-
-        @keyframes fade-in {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
         }
 
         h1 {
             font-size: 36px;
             color: white;
             margin-bottom: 20px;
-            opacity: 0;
-            animation: fade-in 1.5s ease-in-out forwards;
         }
 
         .login-container h2 {
@@ -157,21 +139,6 @@
             font-size: 14px;
             margin-bottom: 10px;
             text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .error-message ul {
-            list-style: disc;
-            list-style-position: inside;
-            padding-left: 0;
-            margin: 0;
-            display: inline-block;
-        }
-
-        .error-message li {
-            margin-bottom: 5px;
         }
 
         footer {
@@ -192,30 +159,25 @@
         <div class="login-container">
             <h2>Login</h2>
 
-            @if ($errors->any())
-                <div class="error-message" id="errorMessage">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+            <!-- Display error message if login fails -->
+            @if (session('incorrect_msg'))
+                <div class="error-message">
+                    {{ session('incorrect_msg') }}
                 </div>
             @endif
-
 
             @if(session('login_success'))
                 <script>
                     Swal.fire({
                         icon: 'success',
                         title: 'Login Successful',
-                        text: '{{ session('login_success') }}',
+                        text: "{!! session('login_success') !!}",
                         showConfirmButton: false,
                         timer: 1500
                     });
                 </script>
             @endif
 
-            <!-- Corrected form action to point to admin login submit route -->
             <form action="/loginAuth" method="post">
                 @csrf
                 <div class="input-container">
@@ -246,15 +208,6 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const errorMessage = document.getElementById("errorMessage");
-            if (errorMessage) {
-                setTimeout(() => {
-                    errorMessage.style.opacity = "0"; // Fade out effect
-                    setTimeout(() => errorMessage.remove(), 500); // Remove the element after fade out
-                }, 3000); // 3 seconds
-            }
-
-            // Toggle show password functionality
             const showPasswordCheckbox = document.getElementById('showPassword');
             const passwordInput = document.getElementById('password');
             showPasswordCheckbox.addEventListener('change', function () {

@@ -71,6 +71,7 @@
     </style>
 </head>
 <body>
+
     <form action="/add" method="POST">
         @csrf
         <h1>Add Employee</h1>
@@ -96,13 +97,7 @@
             <option value="Female">Female</option>
         </select>
         
-        <label for="position_id">Position:</label>
-        <select id="position_id" name="position_id">
-            <option value=""></option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-        </select>
+        
         <label for="statutory_benefits">Statutory benefits:</label>
         <select id="statutory_benefits" name="statutory_benefits">
         <option value=""></option>
@@ -119,6 +114,10 @@
         <input type="file" id="photo" name="photo" accept="image/*" >
         
         <input type="submit" value="Submit">
+       
     </form>
+    <button class="btn btn-primary mb-3" onclick="window.location.href='/addEmployeeList';">
+    <i class="fas fa-plus"></i> back
+</button>
 </body>
 </html>

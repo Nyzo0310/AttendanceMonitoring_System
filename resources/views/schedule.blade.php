@@ -104,8 +104,7 @@
 </head>
 <body>
     <h1>Schedule</h1>
-    <form action="Add" method="Post">
-        @csrf
+   
         <button type="button" id="newButton">New</button>
 
         <!-- Modal Structure -->
@@ -113,12 +112,14 @@
             <div class="modal-content">
                 <span class="close">&times;</span>
                 <h2>New Schedule</h2>
-                <form action="Add" method="Post">
+                <form action="AddSched" method="Post">
                     @csrf
+                    <label for="Date">Date:</label>
+                    <input type="date" id="work_date" name="work_date"><br>
                     <label for="In">Time In:</label>
-                    <input type="number" name="In" required><br><br>
+                    <input type="time" id="start_time" name="start_time" required><br>
                     <label for="Out">Time Out:</label>
-                    <input type="number" name="Out" required><br><br>
+                    <input type="time" id="end_time" name="end_time" required><br>
                     <button type="submit">Add Schedule</button>
                 </form>
             </div>
@@ -127,17 +128,21 @@
         <table>
             <thead>
                 <tr>
+                    <th>Work Date</th>
                     <th>Time In</th>
                     <th>Time Out</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
+                @foreach($schedule as $schedule)
                 <tr>
-                    <td></td>
-                    <td></td>
+                    <td>{{$schedule->work_date}}</td>
+                    <td>{{$schedule->start_time }}</td>
+                    <td>{{$schedule->end_time}}</td>
                     <td></td>
                 </tr>
+                @endforeach
             </tbody>
         </table>
     </form>

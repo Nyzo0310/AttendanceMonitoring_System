@@ -13,8 +13,6 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id('schedule_id');
-            // Remove the foreign key constraint below
-            $table->unsignedBigInteger('employee_id'); // Remove the foreignId line
             $table->date('work_date');
             $table->time('start_time');
             $table->time('end_time');
