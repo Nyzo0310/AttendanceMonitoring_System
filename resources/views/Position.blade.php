@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deduction Management</title>
+    <title>Position Management</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -13,6 +14,12 @@
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
+            background: #f4f7fa; /* Soft gray background for the whole page */
+        }
+        h2 {
+            font-family: 'Georgia', serif;
+            font-weight: 600;
+            margin-bottom: 20px;
         }
 
         /* Navbar Styles */
@@ -45,8 +52,8 @@
 
         .navbar .username i {
             margin-right: 5px;
+            font-size: 1.2rem;
         }
-
         /* Sidebar Styles */
         .offcanvas {
             width: 300px;
@@ -79,9 +86,8 @@
             color: #ffffff;
             padding: 15px;
             font-weight: bold;
-            width: 100%;
-            margin: 0;
-            box-sizing: border-box;
+            margin-bottom: 10px;
+            border-radius: 5px;
         }
 
         /* Sidebar Menu Link */
@@ -117,18 +123,44 @@
 
         /* Main Content Styles */
         .main-content {
-            font-family: 'Georgia', serif;
             padding: 20px;
-            background-color: #f8f9fa;
-            min-height: 100vh;
+            min-height: 100vh; /* Ensures content covers the full height of the screen */
         }
 
-        /* Table Styles */
+        /* Table Wrapper */
         .table-wrapper {
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Action Buttons */
+        .btn-edit {
+            color: white;
+            background-color: #28a745;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-delete {
+            color: white;
+            background-color: #dc3545;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit:hover {
+            background-color: #218838;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
@@ -163,16 +195,15 @@
                 <div class="user-info text-center mb-4">
                     @auth
                         <img src="{{ asset('path_to_user_icon.png') }}" alt="User Icon" class="rounded-circle" width="70">
-                        <h5>{{ Auth::user()->username }}</h5>
+                        <h5 class="mt-2">{{ Auth::user()->username }}</h5>
                         <span><i class="fas fa-circle text-success"></i> Online</span>
                     @else
                         <img src="{{ asset('path_to_guest_icon.png') }}" alt="Guest Icon" class="rounded-circle" width="70">
-                        <h5>Guest</h5>
+                        <h5 class="mt-2">Guest</h5>
                         <span><i class="fas fa-circle text-secondary"></i> Offline</span>
                     @endauth
                 </div>
 
-                <!-- Menu -->
                 <div class="sidebar-section">Reports</div>
                 <a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
 
@@ -184,92 +215,275 @@
                 </a>
                 <div class="collapse" id="employeesSubmenu">
                     <ul class="list-unstyled ps-4">
-                        <li><a href="/addEmployeeList">Employee List</a></li>
-                        <li><a href="/overtime">Overtime</a></li>
-                        <li><a href="/cashadvance">Cash Advance</a></li>
-                        <li><a href="/schedule">Schedules</a></li>
+                        <li><a href="{{ route('admin.addEmployeeList') }}">Employee List</a></li>
+                        <li><a href="{{ route('admin.overtime') }}">Overtime</a></li>
+                        <li><a href="{{ route('admin.cashadvance') }}">Cash Advance</a></li>
+                        <li><a href="{{ route('admin.schedule') }}">Schedules</a></li>
                     </ul>
                 </div>
 
-                <a href="/deduction"><i class="fas fa-dollar-sign"></i> Deductions</a>
-                <a href="/addEmployeeList"><i class="fas fa-briefcase"></i> Positions</a>
+                <a href="{{ route('admin.deduction') }}"><i class="fas fa-dollar-sign"></i> Deductions</a>
+                <a href="{{ route('admin.position') }}"><i class="fas fa-briefcase"></i> Positions</a>
 
                 <div class="sidebar-section">Printables</div>
-                <a href="#"><i class="fas fa-print"></i> Payroll</a>
-                <a href="#"><i class="fas fa-clock"></i> Schedule</a>
+                <a href="{{ route('admin.payroll') }}"><i class="fas fa-print"></i> Payroll</a>
+                <a href="{{ route('admin.schedule') }}"><i class="fas fa-clock"></i> Schedule</a>
             </div>
         </div>
     </div>
 
-    <!-- Main Content for Position Management -->
-    <div class="main-content">
+    <div class="container main-content">
         <h2>Position</h2>
         <div class="table-wrapper">
-            <!-- Button to trigger modal -->
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addPositionModal">
-            <i class="fas fa-plus"></i> New
-        </button>
+            <!-- Add Position Button -->
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addPositionModal">
+                <i class="fas fa-plus"></i> New
+            </button>
 
+            <!-- Position Table -->
             <div class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th>Position Title</th>
                             <th>Rate Per Hour</th>
-                            <th>Action</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach($position as $positions)
-                    <tr>
-                        <td>{{ $positions->position_name }}</td>
-                            <td>{{ $positions->rate_per_hour }}</td>
-                        <td></td>
-                    </tr>
-                    @endforeach
-
-                        <tr>
-                            <td colspan="3" class="text-center">No data available in table</td>
-                        </tr>
+                        @if(count($position) === 0)
+                            <tr>
+                                <td colspan="3" class="text-center">No data available</td>
+                            </tr>
+                        @else
+                            @foreach($position as $positions)
+                            <tr data-id="{{ $positions->position_id }}">
+                                <td>{{ $positions->position_name }}</td>
+                                <td>{{ $positions->rate_per_hour }}</td>
+                                <td>
+                                    <!-- Edit Button -->
+                                    <button class="btn btn-success btn-edit" 
+                                            data-id="{{ $positions->position_id }}" 
+                                            data-name="{{ $positions->position_name }}" 
+                                            data-rate="{{ $positions->rate_per_hour }}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <!-- Delete Button -->
+                                    <button class="btn btn-danger btn-delete" 
+                                            data-id="{{ $positions->position_id }}">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    <!-- Modal Structure -->
-<div class="modal fade" id="addPositionModal" tabindex="-1" aria-labelledby="addPositionModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addPositionModalLabel">Add New Position</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Form inside the modal -->
-                <form action="{{ route('admin.saveposition') }}" method="POST">
-    @csrf  <!-- Include CSRF token for form submission -->
-    <div class="modal-body">
-        <div class="form-group">
-            <label for="position_name">Position Name</label>
-            <input type="text" class="form-control" id="position_name" name="position_name" required>
-        </div>
-        <div class="form-group">
-            <label for="rate_per_hour">Rate Per Hour</label>
-            <input type="text" class="form-control" id="rate_per_hour" name="rate_per_hour" required>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save</button>
-    </div>
-</form>
+
+    <!-- Modals -->
+    <!-- Add Position Modal -->
+    <div class="modal fade" id="addPositionModal" tabindex="-1" aria-labelledby="addPositionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPositionModalLabel">Add Position</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPositionForm">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="position_name" class="form-label">Position Name</label>
+                            <input type="text" class="form-control" id="position_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="rate_per_hour" class="form-label">Rate Per Hour</label>
+                            <input type="number" class="form-control" id="rate_per_hour" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Add</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
+    <!-- Edit Position Modal -->
+    <div class="modal fade" id="editPositionModal" tabindex="-1" aria-labelledby="editPositionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPositionModalLabel">Edit Position</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editPositionForm">
+                        @csrf
+                        <input type="hidden" id="edit_position_id">
+                        <div class="mb-3">
+                            <label for="edit_position_name" class="form-label">Position Name</label>
+                            <input type="text" class="form-control" id="edit_position_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_rate_per_hour" class="form-label">Rate Per Hour</label>
+                            <input type="number" class="form-control" id="edit_rate_per_hour" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Bootstrap JS -->
+    <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.querySelector('#addPositionForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    // Collect form data directly from input fields
+    const positionName = document.getElementById('position_name').value.trim();
+    const ratePerHour = document.getElementById('rate_per_hour').value.trim();
+
+    if (!positionName || !ratePerHour) {
+        Swal.fire({
+            title: 'Error!',
+            text: 'Both Position Name and Rate Per Hour are required.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+        return;
+    }
+
+    // Send POST request via fetch API
+    fetch('{{ route('admin.saveposition') }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            position_name: positionName,
+            rate_per_hour: ratePerHour,
+        }),
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                // Close the modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addPositionModal'));
+                modal.hide();
+
+                // Show SweetAlert success message
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Position has been added successfully.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                }).then(() => {
+                    // Reload the page to show the updated position list
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data.message || 'An error occurred while adding the position.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'An unexpected error occurred.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
+        });
+});
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Edit Button Click
+            document.body.addEventListener('click', (e) => {
+                if (e.target.closest('.btn-edit')) {
+                    const button = e.target.closest('.btn-edit');
+                    const id = button.getAttribute('data-id');
+                    const name = button.getAttribute('data-name');
+                    const rate = button.getAttribute('data-rate');
+
+                    document.getElementById('edit_position_id').value = id;
+                    document.getElementById('edit_position_name').value = name;
+                    document.getElementById('edit_rate_per_hour').value = rate;
+
+                    new bootstrap.Modal(document.getElementById('editPositionModal')).show();
+                }
+            });
+
+            // Edit Form Submission
+            document.getElementById('editPositionForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const id = document.getElementById('edit_position_id').value;
+                const name = document.getElementById('edit_position_name').value;
+                const rate = document.getElementById('edit_rate_per_hour').value;
+
+                fetch(`/position/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    },
+                    body: JSON.stringify({ position_name: name, rate_per_hour: rate }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Success', 'Position updated successfully!', 'success').then(() => location.reload());
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                });
+            });
+
+            // Delete Button Click
+            document.body.addEventListener('click', (e) => {
+                if (e.target.closest('.btn-delete')) {
+                    const button = e.target.closest('.btn-delete');
+                    const id = button.getAttribute('data-id');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'This action cannot be undone!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, delete it!',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`/position/${id}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                },
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire('Deleted!', 'Position deleted successfully!', 'success').then(() => location.reload());
+                                } else {
+                                    Swal.fire('Error', data.message, 'error');
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

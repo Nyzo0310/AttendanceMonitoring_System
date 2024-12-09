@@ -114,28 +114,28 @@ class Display extends Controller
         return view('Attendance');
     }
 
-    public function saveposition(Request $position)
+    public function saveposition(Request $request)
     {
-        $validateposition = $position->validate([
+        $validated = $request->validate([
             'position_name' => 'required|string|max:255',
             'rate_per_hour' => 'required|numeric',
         ]);
 
-        Position::create($validateposition);
+        Position::create($validated);
 
-        return response("Position Added");
+        return response()->json(['success' => true, 'message' => 'Position added successfully.']);
     }
 
     public function AddDeduction(Request $deduction)
     {
-        $validatededuction = $deduction->validate([
+        $validated = $deduction->validate([
             'deduction_type' => 'required|string|max:255',
             'amount' => 'required|numeric',
         ]);
 
-        Deductions::create($validatededuction);
+        Deductions::create($validated);
 
-        return response("Deduction Added");
+        return response()->json(['success' => true, 'message' => 'Deduction added successfully.']);
     }
 
     public function AddSched(Request $schedule)
@@ -236,18 +236,55 @@ class Display extends Controller
         return redirect()->route('admin.addEmployeeList')->with('success', 'Employee deleted successfully.');
     }
 
-    public function updatePosition(Request $request, $id)
+    public function deleteDeduction($id)
     {
-        $employee = Employee::find($id);
-        if (!$employee) {
-            return response()->json(['success' => false, 'message' => 'Employee not found.']);
+        \Log::info("Received request to delete deduction with ID: $id");
+
+        $deduction = Deductions::find($id);
+
+        if ($deduction) {
+            \Log::info("Found deduction: " . json_encode($deduction));
+            $deduction->delete();
+            \Log::info("Deduction with ID $id deleted successfully.");
+            return response()->json(['success' => true, 'message' => 'Deduction deleted successfully.']);
         }
 
-        $employee->position = $request->input('position');
-        $employee->save();
+        \Log::error("Deduction with ID $id not found.");
+        return response()->json(['success' => false, 'message' => 'Deduction not found.']);
+    }
 
+    public function deletePosition($id)
+    {
+        \Log::info("Attempting to delete position with ID: $id");
+        try {
+            $position = Position::findOrFail($id);
+            $position->delete();
+
+            \Log::info("Deleted position with ID: $id successfully.");
+            return response()->json(['success' => true, 'message' => 'Position deleted successfully.']);
+        } catch (\Exception $e) {
+            \Log::error("Error deleting position with ID: $id - " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'An unexpected error occurred.']);
+        }
+    }
+
+    
+    public function updatePosition(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'position_name' => 'required|string|max:255',
+            'rate_per_hour' => 'required|numeric',
+        ]);
+
+        $position = Position::where('position_id', $id)->first();
+        if (!$position) {
+            return response()->json(['success' => false, 'message' => 'Position not found.']);
+        }
+
+        $position->update($validated);
         return response()->json(['success' => true, 'message' => 'Position updated successfully.']);
     }
+
 
     public function assignPosition(Request $request)
     {

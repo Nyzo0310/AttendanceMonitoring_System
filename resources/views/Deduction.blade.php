@@ -13,6 +13,12 @@
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
+            background: #f4f7fa; /* Soft gray background for the whole page */
+        }
+        h2 {
+            font-family: 'Georgia', serif;
+            font-weight: 600;
+            margin-bottom: 20px;
         }
 
         /* Navbar Styles */
@@ -45,8 +51,8 @@
 
         .navbar .username i {
             margin-right: 5px;
+            font-size: 1.2rem;
         }
-
         /* Sidebar Styles */
         .offcanvas {
             width: 300px;
@@ -79,9 +85,8 @@
             color: #ffffff;
             padding: 15px;
             font-weight: bold;
-            width: 100%;
-            margin: 0;
-            box-sizing: border-box;
+            margin-bottom: 10px;
+            border-radius: 5px;
         }
 
         /* Sidebar Menu Link */
@@ -117,18 +122,44 @@
 
         /* Main Content Styles */
         .main-content {
-            font-family: 'Georgia', serif;
             padding: 20px;
-            background-color: #f8f9fa;
-            min-height: 100vh;
+            min-height: 100vh; /* Ensures content covers the full height of the screen */
         }
 
-        /* Table Styles */
+        /* Table Wrapper */
         .table-wrapper {
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Action Buttons */
+        .btn-edit {
+            color: white;
+            background-color: #28a745;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-delete {
+            color: white;
+            background-color: #dc3545;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit:hover {
+            background-color: #218838;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
@@ -163,11 +194,11 @@
                 <div class="user-info text-center mb-4">
                     @auth
                         <img src="{{ asset('path_to_user_icon.png') }}" alt="User Icon" class="rounded-circle" width="70">
-                        <h5>{{ Auth::user()->username }}</h5>
+                        <h5 class="mt-2">{{ Auth::user()->username }}</h5>
                         <span><i class="fas fa-circle text-success"></i> Online</span>
                     @else
                         <img src="{{ asset('path_to_guest_icon.png') }}" alt="Guest Icon" class="rounded-circle" width="70">
-                        <h5>Guest</h5>
+                        <h5 class="mt-2">Guest</h5>
                         <span><i class="fas fa-circle text-secondary"></i> Offline</span>
                     @endauth
                 </div>
@@ -183,7 +214,7 @@
                 </a>
                 <div class="collapse" id="employeesSubmenu">
                     <ul class="list-unstyled ps-4">
-                    <li><a href="{{ route('admin.addEmployeeList') }}">Employee List</a></li>
+                        <li><a href="{{ route('admin.addEmployeeList') }}">Employee List</a></li>
                         <li><a href="{{ route('admin.overtime') }}">Overtime</a></li>
                         <li><a href="{{ route('admin.cashadvance') }}">Cash Advance</a></li>
                         <li><a href="{{ route('admin.schedule') }}">Schedules</a></li>
@@ -196,74 +227,190 @@
                 <div class="sidebar-section">Printables</div>
                 <a href="{{ route('admin.payroll') }}"><i class="fas fa-print"></i> Payroll</a>
                 <a href="{{ route('admin.schedule') }}"><i class="fas fa-clock"></i> Schedule</a>
-                </div>
             </div>
         </div>
+    </div>
 
     <!-- Main Content for Deduction Management -->
-<div class="main-content container mt-5">
-    <h2>Deduction Management</h2>
-    <div class="table-wrapper">
-        <!-- Button to Open Modal -->
-        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#deductionModal">
-            <i class="fas fa-plus"></i> New
-        </button>
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Amount</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($deduction as $deduction)
-                    <tr>
-                        <td>{{$deduction -> deduction_type}}</td>
-                        <td>{{$deduction -> amount}}</td>
-                        <td colspan="3" class="text-center">No data available in table</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <div class="main-content container mt-5">
+        <h2>Manage Deduction</h2>
+        <div class="table-wrapper">
+            <!-- Button to Open Modal -->
+            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#deductionModal">
+                <i class="fas fa-plus"></i> New
+            </button>
+            <div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead style="background-color: #d4e7fd; color: black; font-weight: bold;">
+            <tr>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if($deduction->isEmpty())
+                <tr>
+                    <td colspan="3" class="text-center">No data available in the table</td>
+                </tr>
+            @else
+                @foreach($deduction as $item)
+                <tr>
+                    <td>{{ $item->deduction_type }}</td>
+                    <td>{{ number_format($item->amount, 2) }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-danger delete-deduction" data-id="{{ $item->deduction_id }}">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+                @endforeach
+            @endif
+        </tbody>
+    </table>
 </div>
 
-<!-- Modal for Adding Deduction -->
+    <!-- Modal for Adding Deduction -->
 <div id="deductionModal" class="modal fade" tabindex="-1" aria-labelledby="deductionModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="deductionModalLabel">Add New Deduction</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="AddDeduction" method="POST">
+                <form id="deductionForm">
                     @csrf
-                    <!-- Deduction Description -->
                     <div class="mb-3">
                         <label for="deduction_type" class="form-label">Description</label>
                         <input type="text" class="form-control" id="deduction_type" name="deduction_type" required>
                     </div>
-                    <!-- Deduction Amount -->
                     <div class="mb-3">
                         <label for="amount" class="form-label">Amount</label>
                         <input type="number" class="form-control" id="amount" name="amount" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Save Deduction</button>
+                    <button type="submit" class="btn btn-primary w-100">Save Deduction</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Handle form submission
+    document.getElementById('deductionForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        // Get form data
+        const deductionType = document.getElementById('deduction_type').value;
+        const amount = document.getElementById('amount').value;
+
+        // Send POST request using Fetch API
+        fetch('/AddDeduction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ deduction_type: deductionType, amount: amount })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Close modal
+                const deductionModal = bootstrap.Modal.getInstance(document.getElementById('deductionModal'));
+                deductionModal.hide();
+
+                // Trigger SweetAlert
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Deduction has been added successfully.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Reload the page to reflect the new data
+                    window.location.href = '/deduction';
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while adding the deduction.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'An unexpected error occurred.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    });
+    document.querySelectorAll('.delete-deduction').forEach(button => {
+    button.addEventListener('click', function () {
+        const deductionId = this.getAttribute('data-id');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This action cannot be undone!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then(result => {
+            if (result.isConfirmed) {
+                fetch(`/deduction/${deductionId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'Deduction has been deleted.',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            // Reload the page to update the table
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: data.message,
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'An unexpected error occurred.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+            }
+        });
+    });
+});
+
+</script>
 </body>
 </html>
