@@ -284,7 +284,13 @@
                                     @foreach($employees as $employee)
                                         <tr>
                                             <td>{{ $employee->employee_id }}</td>
-                                            <td></td>
+                                            <td>
+                                                @if($employee->photo)
+                                                    <img src="{{ Storage::disk('custom_disk')->url($employee->photo) }}" alt="Employee Photo" width="50" height="50">
+                                                @else
+                                                    No Photo
+                                                @endif
+                                            </td>
                                             <td>{{ $employee->first_name }}</td>
                                             <td>{{ $employee->last_name }}</td>
                                             <td>{{ $employee->address }}</td>
@@ -333,7 +339,8 @@
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form action="/add" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.add') }}" method="POST" enctype="multipart/form-data">
+
                 @csrf
                 <div class="mb-3">
                     <label for="first_name" class="form-label fw-bold">First Name:</label>

@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('deductions', function (Blueprint $table) {
             $table->id('deduction_id');
-            $table->string('deduction_type', 255);
+            $table->string('name');
             $table->decimal('amount', 10, 2);
             $table->timestamps();
         });
+        
     }
 
     /**
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('deductions_tables');
+        Schema::dropIfExists('deduction');  // Correct the table name here
     }
 };

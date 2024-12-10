@@ -29,13 +29,12 @@ return [
     */
 
     'disks' => [
-
-        'local' => [
-            'driver' => 'local',
-            'root' => storage_path('app/private'),
-            'serve' => true,
-            'throw' => false,
-        ],
+    'custom_disk' => [
+        'driver' => 'local',
+        'root' => storage_path('app/private/public/photos'),
+        'url' => env('APP_URL') . '/storage/private/public/photos',
+        'visibility' => 'public',
+    ],
 
         'public' => [
             'driver' => 'local',

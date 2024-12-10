@@ -1,7 +1,4 @@
 <?php
-
-namespace App\Models;
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,7 +31,7 @@ class Employee extends Model
 
     public function schedule()
     {
-        return $this->belongsTo(Schedule::class, 'schedule_id');
+        return $this->hasMany(Schedule::class, 'employee_id');
     }
 
     public function payrolls()
@@ -51,8 +48,9 @@ class Employee extends Model
     {
         return $this->hasMany(Overtime::class, 'employee_id');
     }
+
     public function attendances()
-{
-    return $this->hasMany(Attendance::class);
-}
+    {
+        return $this->hasMany(Attendance::class);
+    }
 }

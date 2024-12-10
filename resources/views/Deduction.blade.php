@@ -256,7 +256,7 @@
             @else
                 @foreach($deduction as $item)
                 <tr>
-                    <td>{{ $item->deduction_type }}</td>
+                    <td>{{ $item->name }}</td>
                     <td>{{ number_format($item->amount, 2) }}</td>
                     <td>
                         <button class="btn btn-sm btn-success">
@@ -282,11 +282,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="deductionForm">
+                <form action="/AddDeduction" method="POST"  id="deductionForm">
                     @csrf
                     <div class="mb-3">
-                        <label for="deduction_type" class="form-label">Description</label>
-                        <input type="text" class="form-control" id="deduction_type" name="deduction_type" required>
+                        <label for="name" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
                     </div>
                     <div class="mb-3">
                         <label for="amount" class="form-label">Amount</label>
@@ -309,7 +309,7 @@
         e.preventDefault(); // Prevent default form submission
 
         // Get form data
-        const deductionType = document.getElementById('deduction_type').value;
+        const name = document.getElementById('name').value;
         const amount = document.getElementById('amount').value;
 
         // Send POST request using Fetch API
@@ -319,7 +319,7 @@
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({ deduction_type: deductionType, amount: amount })
+            body: JSON.stringify({ name: name, amount: amount })
         })
         .then(response => response.json())
         .then(data => {

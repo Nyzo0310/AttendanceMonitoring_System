@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         // positions table remains unchanged
-    Schema::create('positions', function (Blueprint $table) {
-    $table->id('position_id');
-    $table->string('position_name', 255);
-    $table->integer('rate_per_hour');
-    $table->timestamps();
-    });
+        Schema::create('positions', function (Blueprint $table) {
+            $table->id('position_id');
+            $table->string('position_name', 255);
+            $table->integer('rate_per_hour');
+            $table->timestamps();
+        });
+        
 
     }
 

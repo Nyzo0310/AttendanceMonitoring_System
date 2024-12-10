@@ -18,7 +18,6 @@ Route::get('/deduction',[Display::class,'Display9'])->name('admin.deduction');
 Route::get('/cashadvance',[Display::class,'Display10'])->name('admin.cashadvance');
 Route::get('/login',[Display::class,'Display11'])->name('admin.login');
 Route::delete('/employee/{id}', [Display::class, 'deleteEmployee'])->name('employee.delete');
-Route::get('/addEmployeeList', [Display::class, 'DisplayAddEmployeeList'])->name('admin.addEmployeeList');
 Route::delete('/deduction/{id}', [Display::class, 'deleteDeduction'])->name('deduction.delete');
 Route::delete('/position/{id}', [Display::class, 'deletePosition'])->name('position.delete');
 
@@ -31,4 +30,6 @@ Route::put('/position/{id}', [Display::class, 'updatePosition'])->name('position
 Route::post('/assign', [Display::class, 'assignPosition'])->name('assign.position');
 Route::post('/AddDeduction', [Display::class, 'AddDeduction']);
 Route::post('/AddSched', [Display::class, 'AddSched']);
+Route::post('/addOvertime', [Display::class, 'addOvertime'])->name('addOvertime');
+Route::post('/store', [Display::class, 'store'])->name('admin.cashadvance.store');
 Route::middleware('auth')->get('/dashboard', [Display::class, 'Display1']);

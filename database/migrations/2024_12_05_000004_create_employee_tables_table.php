@@ -19,16 +19,17 @@ return new class extends Migration
             $table->date('birthdate');
             $table->string('contact_no', 255);
             $table->enum('gender', ['male', 'female', 'other']);
-            $table->unsignedBigInteger('position_id')->nullable();  // The position_id is nullable
-            $table->string('photo')->nullable();
+            $table->unsignedBigInteger('position_id')->nullable();
+            $table->string('photo')->nullable();  // This will store the photo's file path
             $table->enum('statutory_benefits', ['SSS', 'Pag-Ibig', 'PhilHealth', 'SSS,Pag-Ibig', 'SSS,PhilHealth', 'SSS,Pag-Ibig,PhilHealth', 'Pag-Ibig,PhilHealth']);
             $table->timestamps();
-
-            // Adding the foreign key constraint for position_id
+        
+            // Foreign key relationship
             $table->foreign('position_id')
-                ->references('position_id')->on('positions')  // Assuming the 'positions' table has 'position_id'
-                ->onDelete('set null');  // If the position is deleted, set the position_id to null for the employee
+                ->references('position_id')->on('positions')
+                ->onDelete('set null');  // If position is deleted, set position_id to null
         });
+        
     }
 
     /**

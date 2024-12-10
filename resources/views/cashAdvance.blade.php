@@ -199,36 +199,98 @@
                 </div>
             </div>
         </div>
+<!-- Main Content -->
+<div class="main-content">
+    <h2>Cash Advance</h2>
+    <div class="table-wrapper">
+        <!-- HTML Button Trigger for Modal -->
+<button id="newCashAdvanceButton" class="btn btn-primary mb-3">
+    <i class="fas fa-plus"></i> New
+</button>
 
-
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <h2>Cash Advance</h2>
-        <div class="table-wrapper">
-            <button class="btn btn-primary mb-3"><i class="fas fa-plus"></i> New</button>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Employee ID</th>
-                            <th>Name</th>
-                            <th>Amount</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="5" class="text-center">No data available in table</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Employee ID</th>
+                        <th>Employee Name</th> <!-- Add this column for employee name -->
+                        <th>Amount</th>
+                        <th>Status</th> <!-- Add status column -->
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($cashAdvances as $cashAdvance)
+                    <tr>
+                        <td>{{ $cashAdvance->request_date }}</td>
+                        <td>{{ $cashAdvance->employee_id }}</td>
+                        <td>{{ $cashAdvance->employee ? $cashAdvance->employee->first_name . ' ' . $cashAdvance->employee->last_name : 'No Employee Found' }}</td>
+                        <td>{{ $cashAdvance->amount }}</td>
+                        <td>{{ $cashAdvance->status }}</td>
+                        <td>
+                            <!-- Action buttons (e.g., Edit, Delete) -->
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Modal for Adding Cash Advance -->
+<div class="modal fade" id="cashAdvanceModal" tabindex="-1" aria-labelledby="cashAdvanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cashAdvanceModalLabel">New Cash Advance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="/store">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="employee_id">Employee ID</label>
+                        <input type="number" class="form-control" id="employee_id" name="employee_id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="request_date">Request Date</label>
+                        <input type="date" class="form-control" id="request_date" name="request_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="number" class="form-control" id="amount" name="amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript to handle Modal with Bootstrap 5 -->
+<script>
+    document.getElementById('newCashAdvanceButton').addEventListener('click', function() {
+        // Initialize and show the modal
+        var myModal = new bootstrap.Modal(document.getElementById('cashAdvanceModal'));
+        myModal.show();
+    });
+</script>
+
+<!-- Bootstrap JS (Bootstrap 5 version) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

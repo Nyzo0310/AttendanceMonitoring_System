@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;  // Make sure this matches the directory structure
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

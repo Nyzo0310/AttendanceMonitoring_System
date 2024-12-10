@@ -5,19 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Holiday extends Model
+class Overtime extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'holiday_id';
+    protected $table = 'overtimes';
+    protected $primaryKey = 'overtime_id';
 
     protected $fillable = [
-        'holiday_date',
-        'description',
+        'Overtime_Type',
+        'Rate_Per_Hour',
     ];
 
     public function attendances()
     {
-        return $this->hasMany(Attendance::class, 'holiday_id');
+        return $this->hasMany(Attendance::class, 'overtime_id');
     }
 }

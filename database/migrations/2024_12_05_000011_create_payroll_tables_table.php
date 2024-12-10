@@ -13,14 +13,22 @@ return new class extends Migration
     {
         Schema::create('payrolls', function (Blueprint $table) {
             $table->id('payroll_id');
-            // Remove the foreign key constraint below
-            $table->unsignedBigInteger('employee_id'); // Remove the foreignId line
+            $table->unsignedBigInteger('employee_id');
             $table->decimal('gross_salary', 10, 2);
-            // Remove the foreign key constraint below
-            $table->unsignedBigInteger('deduction_id'); // Remove the foreignId line
+            $table->unsignedBigInteger('deduction_id')->nullable();  // Allowing null for foreign key
             $table->decimal('net_salary', 10, 2);
             $table->timestamps();
+        
+            // Foreign key relationship
+            $table->foreign('employee_id')
+                ->references('employee_id')->on('employees')
+                ->onDelete('cascade');  // When an employee is deleted, their payroll is deleted
+        
+            $table->foreign('deduction_id')
+                ->references('deduction_id')->on('deductions')
+                ->onDelete('set null');  // If a deduction is deleted, set deduction_id to null in payroll
         });
+        
     }
 
     /**
@@ -28,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payroll_tables');
+        Schema::dropIfExists('payrolls');  // Correct the table name here
     }
 };

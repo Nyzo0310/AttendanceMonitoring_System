@@ -204,25 +204,59 @@
     <div class="main-content">
         <h2>Overtime</h2>
         <div class="table-wrapper">
-            <button class="btn btn-primary mb-3"><i class="fas fa-plus"></i> New</button>
+            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#newOvertimeModal"><i class="fas fa-plus"></i> New</button>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Employee ID</th>
-                            <th>Name</th>
-                            <th>No. of Hours</th>
-                            <th>Rate</th>
+                            <th>Overtime Type</th>
+                            <th>Rate Per Hour</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="6" class="text-center">No data available in table</td>
-                        </tr>
+                        @foreach($overtimes as $overtime)
+                            <tr>
+                                <td>{{ $overtime->Overtime_Type }}</td>
+                                <td>{{ $overtime->Rate_Per_Hour }}</td>
+                                <td>
+                                    <a href="" class="btn btn-warning">Edit</a>
+                                    <a href="" class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Overtime Modal -->
+    <div class="modal fade" id="newOvertimeModal" tabindex="-1" aria-labelledby="newOvertimeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newOvertimeModalLabel">New Overtime Type</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('addOvertime') }}" method="post">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="overtimeType" class="form-label">Overtime Type</label>
+                            <input type="text" class="form-control" id="overtimeType" name="Overtime_Type" placeholder="Enter overtime type">
+                        </div>
+                        <div class="mb-3">
+                            <label for="ratePerHour" class="form-label">Rate Per Hour</label>
+                            <input type="number" class="form-control" id="ratePerHour" name="Rate_Per_Hour" placeholder="Enter rate per hour">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                    
+                </div>
             </div>
         </div>
     </div>

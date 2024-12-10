@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('overtimes', function (Blueprint $table) {
             $table->id('overtime_id');
-            // Remove the foreign key constraint below
-            $table->unsignedBigInteger('employee_id'); // Remove the foreignId line
-            $table->date('date');
-            $table->decimal('hours', 5, 2);
-            $table->decimal('rate', 10, 2);
+            $table->string('Overtime_Type');
+            $table->decimal('Rate_Per_Hour', 10, 2);
             $table->timestamps();
         });
+        
     }
 
     /**
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('overtime_tables');
+        Schema::dropIfExists('overtimes');
     }
 };

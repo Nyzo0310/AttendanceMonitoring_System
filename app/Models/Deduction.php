@@ -1,18 +1,17 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Deductions extends Model
+class Deduction extends Model
 {
     use HasFactory;
 
     protected $primaryKey = 'deduction_id';
 
     protected $fillable = [
-        'deduction_type',
+        'name',
         'amount',
     ];
 
@@ -21,3 +20,4 @@ class Deductions extends Model
         return $this->hasMany(Payroll::class, 'deduction_id');
     }
 }
+

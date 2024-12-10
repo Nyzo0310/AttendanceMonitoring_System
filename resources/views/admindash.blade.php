@@ -361,61 +361,69 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Pass the attendanceCounts data to JavaScript
-        const attendanceData = @json($attendanceCounts);
-    
-        // Labels for months
-        const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    
-        // Initialize data arrays for on-time and late counts
-        const ontimeData = new Array(12).fill(0);
-        const lateData = new Array(12).fill(0);
-    
-        // Populate the data arrays
-        attendanceData.forEach(data => {
-            const monthIndex = data.month - 1; // Convert month to zero-based index
-            ontimeData[monthIndex] = data.ontime || 0;
-            lateData[monthIndex] = data.late || 0;
-        });
-    
-        // Create the chart
-        const ctx = document.getElementById('attendanceChart').getContext('2d');
-        const attendanceChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'On-time',
-                        data: ontimeData,
-                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
-                    },
-                    {
-                        label: 'Late',
-                        data: lateData,
-                        backgroundColor: 'rgba(108, 117, 125, 0.8)',
-                    },
-                ],
+<!-- Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Attendance Chart Canvas -->
+<canvas id="attendanceChart"></canvas>
+
+<script>
+  const attendanceData = @json($attendanceCounts);
+console.log(attendanceData); // Add this line to check the data in the browser console
+
+// Labels for months
+const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+// Initialize data arrays for on-time and late counts
+const ontimeData = new Array(12).fill(0);
+const lateData = new Array(12).fill(0);
+
+// Populate the data arrays with monthly data
+attendanceData.forEach(data => {
+    const monthIndex = data.month - 1; // Convert month to zero-based index
+    ontimeData[monthIndex] = data.ontime || 0;
+    lateData[monthIndex] = data.late || 0;
+});
+
+// Create the chart
+const ctx = document.getElementById('attendanceChart').getContext('2d');
+const attendanceChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [
+            {
+                label: 'On-time',
+                data: ontimeData,
+                backgroundColor: 'rgba(40, 167, 69, 0.8)', // Green color for on-time
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 300, // Set the maximum range of the y-axis
-                        ticks: {
-                            stepSize: 50, // Optional: Adjust the step size between ticks
-                        },
-                    },
+            {
+                label: 'Late',
+                data: lateData,
+                backgroundColor: 'rgba(108, 117, 125, 0.8)', // Gray color for late
+            },
+        ],
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 300, // Set the maximum range of the y-axis (adjust as needed)
+                ticks: {
+                    stepSize: 50, // Adjust the step size between ticks
                 },
             },
-        });
-    </script>
+        },
+    },
+});
+</script>
+
+    
 </body>
 </html>
