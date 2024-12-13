@@ -71,12 +71,6 @@ class Display extends Controller
         return view('holiday');
     }
 
-    public function Display5()
-    {
-        $schedule = Schedule::all();
-        return view('schedule', compact('schedule'));
-    }
-
     public function Display4()
     {
         $position = Position::all();
@@ -138,31 +132,61 @@ class Display extends Controller
         return view('cashadvance', compact('cashAdvances'));
     }
 
-    // Store new cash advance in the database
     public function store(Request $request)
-    {
-        // Validate the form input
-        $validated = $request->validate([
-            'employee_id' => 'required|exists:employees,employee_id', // Ensure employee exists
-            'request_date' => 'required|date',
-            'amount' => 'required|numeric',
-            'status' => 'required|in:approved,pending,rejected',
-        ]);
+{
+    // Validate the form input
+    $validated = $request->validate([
+        'employee_id' => 'required|exists:employees,employee_id',
+        'request_date' => 'required|date',
+        'amount' => 'required|numeric',
+        'status' => 'required|in:approved,pending,rejected',
+    ]);
 
-        // Create and store the new cash advance
-        CashAdvance::create([
-            'employee_id' => $validated['employee_id'],
-            'request_date' => $validated['request_date'],
-            'amount' => $validated['amount'],
-            'status' => $validated['status'],
-        ]);
+    // Create and store the new cash advance
+    CashAdvance::create([
+        'employee_id' => $validated['employee_id'],
+        'request_date' => $validated['request_date'],
+        'amount' => $validated['amount'],
+        'status' => $validated['status'],
+    ]);
+    
+    // Redirect with a success message
+    return redirect()->route('admin.cashadvance')->with('success', 'Cash Advance created successfully!');
+}    
 
-        // Redirect back to the page with success message
-        return redirect()->route('admin.cashadvance')->with('success', 'Cash Advance created successfully!');
+public function update(Request $request, $id)
+{
+    $validated = $request->validate([
+        'employee_id' => 'required|exists:employees,employee_id',
+        'request_date' => 'required|date',
+        'amount' => 'required|numeric',
+        'status' => 'required|in:approved,pending,rejected',
+    ]);
+
+    $cashAdvance = CashAdvance::findOrFail($id);
+    $cashAdvance->update($validated);
+
+    return redirect()->route('admin.cashadvance')->with('success', 'Cash Advance updated successfully!');
+}
+ 
+public function destroy($id)
+{
+    try {
+        // Find by the correct primary key
+        $cashAdvance = CashAdvance::where('cash_advance_id', $id)->first();
+
+        if (!$cashAdvance) {
+            return response()->json(['success' => false, 'message' => 'Cash Advance not found.'], 404);
+        }
+
+        $cashAdvance->delete();
+
+        return response()->json(['success' => true, 'message' => 'Cash Advance deleted successfully!']);
+    } catch (\Exception $e) {
+        return response()->json(['success' => false, 'message' => 'An error occurred while deleting.'], 500);
     }
+}
 
-    
-    
     public function Display2()
     {
         return view('Employee');
@@ -170,9 +194,11 @@ class Display extends Controller
 
     public function DisplayAddEmployeeList()
     {
-        $employees = Employee::all();
-        return view('EmployeeList', compact('employees'));
+        $employees = Employee::all(); // Fetch all employees
+        $positions = Position::all(); // Fetch all positions
+        return view('EmployeeList', compact('employees', 'positions'));
     }
+
 
     public function Display1()
     {
@@ -209,69 +235,120 @@ class Display extends Controller
         return response()->json(['success' => true, 'message' => 'Deduction added successfully.']);
     }
 
-    public function AddSched(Request $schedule)
+    public function Display5()
+{
+    $schedules = Schedule::all(); // Fetch all schedules from the database
+    return view('schedule', compact('schedules')); // Pass schedules to the view
+}
+
+
+    public function AddSched(Request $request)
     {
-        $validatedSched = $schedule->validate([
+        $validated = $request->validate([
             'work_date' => 'required|date',
             'start_time' => 'required',
-            'end_time' => 'required'
+            'end_time' => 'required|after:start_time', // Ensure end time is after start time
         ]);
 
-        Schedule::create($validatedSched);
+        Schedule::create($validated);
+
+        return redirect()->route('admin.schedule')->with('success', 'Schedule added successfully!');
     }
+
+    public function deleteSchedule($id)
+    {
+        $schedule = Schedule::findOrFail($id);
+        $schedule->delete();
+
+        return redirect()->route('admin.schedule')->with('success', 'Schedule deleted successfully!');
+    }
+
     public function addOvertime(Request $request)
-{
-    // Validate the input
-    $validatedData = $request->validate([
-        'Overtime_Type' => 'required|string|max:255',
-        'Rate_Per_Hour' => 'required|numeric|min:0'
-    ]);
-
-    // Create the new overtime entry
-    Overtime::create($validatedData);
-
-    // Redirect back or wherever you want
-    return redirect()->route('admin.overtime')->with('success', 'Overtime type added successfully.');
-}
-
-public function add(Request $EmployeeData)
-{
-    // Validate the input data
-    $validatedData = $EmployeeData->validate([
-        'first_name' => 'required',
-        'last_name' => 'required',
-        'address' => 'required',
-        'birthdate' => 'required',
-        'contact_no' => 'required',
-        'gender' => 'required',
-        'position_id' => 'nullable',
-        'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image file
-        'statutory_benefits' => 'required',
-    ]);
-
-    // Create a new Employee object
-    $employee = new Employee();
+    {
+        $validatedData = $request->validate([
+            'Overtime_Type' => 'required|string|max:255',
+            'Rate_Per_Hour' => 'required|numeric|min:0'
+        ]);
     
-    // Fill in the employee data (excluding the photo)
-    $employee->first_name = $EmployeeData->first_name;
-    $employee->last_name = $EmployeeData->last_name;
-    $employee->address = $EmployeeData->address;
-    $employee->birthdate = $EmployeeData->birthdate;
-    $employee->contact_no = $EmployeeData->contact_no;
-    $employee->gender = $EmployeeData->gender;
-    $employee->statutory_benefits = $EmployeeData->statutory_benefits;
-    $employee->position_id = $EmployeeData->position_id;
-
-    if ($EmployeeData->hasFile('photo')) {
-        $photoPath = $EmployeeData->file('photo')->store('photos', 'custom_disk');
-        $employee->photo = $photoPath;
+        try {
+            Overtime::create($validatedData);
+    
+            return response()->json(['success' => true, 'message' => 'Overtime type added successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to add overtime type.'], 500);
+        }
     }
-    // Save the employee to the database
-    $employee->save();
+    
 
-    // Redirect or return a response
-    return redirect()->route('admin.addEmployeeList')->with('success', 'Employee added successfully!');
+public function updateOvertime(Request $request, $id)
+{
+    try {
+        $validatedData = $request->validate([
+            'Overtime_Type' => 'required|string|max:255',
+            'Rate_Per_Hour' => 'required|numeric|min:0',
+        ]);
+
+        $overtime = Overtime::findOrFail($id); // Ensure it exists
+        $overtime->update($validatedData); // Update the record
+
+        \Log::info("Overtime with ID {$id} updated successfully.");
+        return response()->json(['success' => true, 'message' => 'Overtime updated successfully!']);
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        \Log::error("Overtime with ID {$id} not found.");
+        return response()->json(['success' => false, 'message' => 'Overtime not found.'], 404);
+    } catch (\Exception $e) {
+        \Log::error("Error updating overtime with ID {$id}: " . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
+    }
 }
+
+public function deleteOvertime($id)
+{
+    \Log::info("Attempting to delete overtime with ID: {$id}");
+
+    try {
+        $overtime = Overtime::findOrFail($id); // Correct primary key
+        \Log::info("Found overtime record: " . json_encode($overtime));
+
+        $overtime->delete();
+        \Log::info("Overtime with ID {$id} deleted successfully.");
+
+        return response()->json(['success' => true, 'message' => 'Overtime deleted successfully!']);
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        \Log::error("Overtime with ID {$id} not found.");
+        return response()->json(['success' => false, 'message' => 'Overtime not found.'], 404);
+    } catch (\Exception $e) {
+        \Log::error("Error deleting overtime with ID {$id}: " . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'An unexpected error occurred.'], 500);
+    }
+}
+
+    public function add(Request $request)
+    {
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'birthdate' => 'required|date',
+            'contact_no' => 'required|string|max:20',
+            'gender' => 'required|in:Male,Female',
+            'position_id' => 'nullable|exists:positions,position_id', // Make position_id optional
+            'statutory_benefits' => 'required|string|max:255',
+            'photo' => 'nullable|image|max:2048',
+        ]);
+
+        $employee = new Employee($validated);
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('photos', 'public');
+            $employee->photo = $path;
+        }              
+
+        $employee->save();
+
+        return redirect()->route('admin.addEmployeeList')->with('success', 'Employee added successfully!');
+    }
+
 
     public function loginAuth(Request $request)
     {
@@ -346,15 +423,30 @@ public function add(Request $EmployeeData)
             }
         }
     }
-    
-
 
     public function deleteEmployee($id)
-    {
-        $employee = Employee::findOrFail($id);
-        $employee->delete();
+{
+    $employee = Employee::find($id);
 
-        return redirect()->route('admin.addEmployeeList')->with('success', 'Employee deleted successfully.');
+    if (!$employee) {
+        return response()->json(['success' => false, 'message' => 'Employee not found!'], 404);
+    }
+
+    $employee->delete();
+
+    return response()->json(['success' => true, 'message' => 'Employee deleted successfully!']);
+}
+
+    
+    public function edit($id)
+    {
+        $cashAdvance = CashAdvance::where('cash_advance_id', $id)->first();
+    
+        if (!$cashAdvance) {
+            return response()->json(['success' => false, 'message' => 'Cash Advance not found.'], 404);
+        }
+    
+        return response()->json($cashAdvance);
     }
 
     public function deleteDeduction($id)

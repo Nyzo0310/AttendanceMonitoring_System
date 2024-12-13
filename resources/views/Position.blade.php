@@ -14,16 +14,20 @@
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
-            background: #f4f7fa; /* Soft gray background for the whole page */
+            background: #f8f9fa; /* Soft gray background */
         }
+
         h2 {
-            font-family: 'Georgia', serif;
+            font-family: Georgia, serif;
+            font-size: 30px;
             font-weight: 600;
+            color: #495057;
+            text-align: left; /* Aligns the title to the left */
             margin-bottom: 20px;
         }
 
         /* Navbar Styles */
-        .navbar {
+       .navbar {
             background: linear-gradient(45deg, #007bff, #0056b3);
             padding: 10px 20px;
             color: white;
@@ -54,6 +58,7 @@
             margin-right: 5px;
             font-size: 1.2rem;
         }
+
         /* Sidebar Styles */
         .offcanvas {
             width: 300px;
@@ -123,44 +128,103 @@
 
         /* Main Content Styles */
         .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
             padding: 20px;
-            min-height: 100vh; /* Ensures content covers the full height of the screen */
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Table Wrapper */
         .table-wrapper {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            overflow: hidden;
         }
 
-        /* Action Buttons */
-        .btn-edit {
+        /* Table Styles */
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+            text-align: center;
+        }
+
+        .table thead th {
+            background: linear-gradient(90deg, #007bff, #0056b3);
             color: white;
-            background-color: #28a745;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.9rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            padding: 10px;
         }
 
-        .btn-delete {
+        .table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e2e6ea;
+        }
+
+        .table tbody td {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .empty-state {
+            text-align: center;
+            font-weight: bold;
+            color: #6c757d;
+        }
+
+        /* Buttons */
+        .btn-primary, .btn-success, .btn-danger {
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #007bff, #0056b3);
+        }
+
+        .btn-success {
+            background: linear-gradient(90deg, #28a745, #218838);
+        }
+
+        .btn-danger {
+            background: linear-gradient(90deg, #dc3545, #b02a37);
+        }
+
+        .btn-primary:hover, .btn-success:hover, .btn-danger:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        /* Modals */
+        .modal-header {
+            background: linear-gradient(90deg, #007bff, #0056b3);
             color: white;
-            background-color: #dc3545;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.9rem;
+            border-radius: 5px 5px 0 0;
         }
 
-        .btn-edit:hover {
-            background-color: #218838;
+        .modal-content {
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-delete:hover {
-            background-color: #c82333;
+        .modal-footer {
+            border-top: none;
+        }
+
+        /* Add Position Button */
+        .add-button {
+            display: flex;
+            justify-content: flex-start;
         }
     </style>
 </head>
@@ -208,7 +272,7 @@
                 <a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
 
                 <div class="sidebar-section">Manage</div>
-                <a href="{{ route('admin.attendance') }}"><i class="fas fa-calendar-check"></i> Attendance</a>
+                <a href="{{ route('admin.attendanceDash') }}"><i class="fas fa-calendar-check"></i> Attendance</a>
                 <a href="#employeesSubmenu" data-bs-toggle="collapse" class="d-flex align-items-center">
                     <i class="fas fa-users"></i> Employees
                     <i class="fas fa-chevron-right ms-auto"></i>
@@ -227,13 +291,12 @@
 
                 <div class="sidebar-section">Printables</div>
                 <a href="{{ route('admin.payroll') }}"><i class="fas fa-print"></i> Payroll</a>
-                <a href="{{ route('admin.schedule') }}"><i class="fas fa-clock"></i> Schedule</a>
             </div>
         </div>
     </div>
 
     <div class="container main-content">
-        <h2>Position</h2>
+        <h2>Manage Position</h2>
         <div class="table-wrapper">
             <!-- Add Position Button -->
             <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addPositionModal">
@@ -293,18 +356,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addPositionForm">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="position_name" class="form-label">Position Name</label>
-                            <input type="text" class="form-control" id="position_name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="rate_per_hour" class="form-label">Rate Per Hour</label>
-                            <input type="number" class="form-control" id="rate_per_hour" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Add</button>
-                    </form>
+                <form id="addPositionForm" method="POST" action="{{ route('admin.saveposition') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="position_name" class="form-label">Position Name</label>
+                        <input type="text" class="form-control" id="position_name" name="position_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rate_per_hour" class="form-label">Rate Per Hour</label>
+                        <input type="number" class="form-control" id="rate_per_hour" name="rate_per_hour" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Position</button>
+                </form>
                 </div>
             </div>
         </div>

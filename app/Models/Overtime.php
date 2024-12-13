@@ -9,8 +9,9 @@ class Overtime extends Model
 {
     use HasFactory;
 
-    protected $table = 'overtimes';
-    protected $primaryKey = 'overtime_id';
+    protected $table = 'overtimes'; // Correct table name
+    protected $primaryKey = 'overtime_id'; // Matches your table's primary key
+    public $timestamps = true; // Ensures `created_at` and `updated_at` are used
 
     protected $fillable = [
         'Overtime_Type',

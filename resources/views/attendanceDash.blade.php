@@ -17,8 +17,11 @@
         }
 
         h2 {
-            font-family: 'Georgia', serif;
+            font-family: Georgia, serif;
+            font-size: 30px;
             font-weight: 600;
+            color: #495057;
+            text-align: left; /* Aligns the title to the left */
             margin-bottom: 20px;
         }
 
@@ -119,6 +122,75 @@
             padding: 20px;
             min-height: 100vh;
         }
+        /* Main Content Styles */
+        .main-content {
+            padding: 20px;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+        /* Highlight Table Header */
+        .table thead th {
+            background: linear-gradient(90deg, #007bff, #0056b3); /* Blue gradient */
+            color: white; /* White text for contrast */
+            font-weight: bold;
+            text-align: center; /* Center align text */
+            border-bottom: 2px solid #0056b3; /* Add a border for separation */
+            padding: 10px; /* Add padding for better spacing */
+        }
+             
+        /* Table Cell Alignment */
+        .table tbody td {
+            vertical-align: middle; /* Aligns the text vertically in the center */
+            text-align: center; /* Ensures center alignment of text */
+        }
+
+        /* Table Wrapper */
+        .table-wrapper {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(90deg, #007bff, #0056b3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(90deg, #dc3545, #b02a37);
+        }
+
+        .btn-success {
+            background: linear-gradient(90deg, #28a745, #218838);
+        }
+
+        /* Action Buttons */
+        .btn-edit {
+            color: white;
+            background-color: #28a745;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-delete {
+            color: white;
+            background-color: #dc3545;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .btn-edit:hover {
+            background-color: #218838;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
 
         /* Card Table Wrapper */
         .card-wrapper {
@@ -132,6 +204,10 @@
         .table-responsive {
             border-radius: 10px;
             overflow: hidden;
+        }
+
+        .add-schedule-button {
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -194,7 +270,6 @@
 
                 <div class="sidebar-section">Printables</div>
                 <a href="{{ route('admin.payroll') }}"><i class="fas fa-print"></i> Payroll</a>
-                <a href="{{ route('admin.schedule') }}"><i class="fas fa-clock"></i> Schedule</a>
             </div>
         </div>
     </div>
@@ -202,6 +277,12 @@
     <!-- Main Content -->
     <div class="main-content">
         <h2>Attendance Records</h2>
+        <!-- Add New Schedule Button -->
+        <div class="add-schedule-button">
+            <a href="{{ route('admin.attendance') }}" class="btn btn-primary">
+                <i class="fas fa-plus" style="margin-right: 8px;"></i> Add New Attendance
+            </a>
+        </div>
         <div class="card-wrapper">
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-bordered align-middle">

@@ -16,8 +16,11 @@
             background: #f4f7fa; /* Soft gray background for the whole page */
         }
         h2 {
-            font-family: 'Georgia', serif;
+            font-family: Georgia, serif;
+            font-size: 30px;
             font-weight: 600;
+            color: #495057;
+            text-align: left; /* Aligns the title to the left */
             margin-bottom: 20px;
         }
 
@@ -126,13 +129,38 @@
             min-height: 100vh; /* Ensures content covers the full height of the screen */
         }
 
-        /* Table Wrapper */
+        /* Table Styles */
         .table-wrapper {
             background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            overflow: hidden;
+        }
+
+        .table thead th {
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 2px solid #0056b3;
+            padding: 10px;
+        }
+        .table tbody td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(90deg, #007bff, #0056b3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(90deg, #dc3545, #b02a37);
+        }
+
+        .btn-success {
+            background: linear-gradient(90deg, #28a745, #218838);
         }
 
         /* Action Buttons */
@@ -207,7 +235,7 @@
                 <a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
 
                 <div class="sidebar-section">Manage</div>
-                <a href="{{ route('admin.attendance') }}"><i class="fas fa-calendar-check"></i> Attendance</a>
+                <a href="{{ route('admin.attendanceDash') }}"><i class="fas fa-calendar-check"></i> Attendance</a>
                 <a href="#employeesSubmenu" data-bs-toggle="collapse" class="d-flex align-items-center">
                     <i class="fas fa-users"></i> Employees
                     <i class="fas fa-chevron-right ms-auto"></i>
@@ -226,7 +254,6 @@
 
                 <div class="sidebar-section">Printables</div>
                 <a href="{{ route('admin.payroll') }}"><i class="fas fa-print"></i> Payroll</a>
-                <a href="{{ route('admin.schedule') }}"><i class="fas fa-clock"></i> Schedule</a>
             </div>
         </div>
     </div>

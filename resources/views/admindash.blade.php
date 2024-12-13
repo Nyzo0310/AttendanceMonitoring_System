@@ -15,6 +15,15 @@
             margin: 0;
         }
 
+        h2 {
+            font-family: Georgia, serif;
+            font-size: 30px;
+            font-weight: 600;
+            color: #495057;
+            text-align: left; /* Aligns the title to the left */
+            margin-bottom: 20px;
+        }
+
         /* Navbar Styles */
          .navbar .btn i.fas.fa-bars {
                 color: white; /* Ensures the icon color is white */
@@ -269,7 +278,7 @@
                 <a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
 
                 <div class="sidebar-section">Manage</div>
-                <a href="{{ route('admin.attendance') }}"><i class="fas fa-calendar-check"></i> Attendance</a>
+                <a href="{{ route('admin.attendanceDash') }}"><i class="fas fa-calendar-check"></i> Attendance</a>
                 <a href="#employeesSubmenu" data-bs-toggle="collapse" class="d-flex align-items-center">
                     <i class="fas fa-users"></i> Employees
                     <i class="fas fa-chevron-right ms-auto"></i>
@@ -288,7 +297,6 @@
 
                 <div class="sidebar-section">Printables</div>
                 <a href="{{ route('admin.payroll') }}"><i class="fas fa-print"></i> Payroll</a>
-                <a href="{{ route('admin.schedule') }}"><i class="fas fa-clock"></i> Schedule</a>
                 </div>
             </div>
         </div>

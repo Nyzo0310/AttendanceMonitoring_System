@@ -18,103 +18,22 @@
             padding: 0;
         }
 
-         /* Navbar Styles */
-         .navbar .btn i.fas.fa-bars {
-                color: white; /* Ensures the icon color is white */
-                font-size: 1.5rem; /* Adjust the size if necessary */
-        }
-         .navbar {
-            background: linear-gradient(45deg, #007bff, #0056b3);
-            padding: 10px 20px;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        /* Fade-in Animation */
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
         }
 
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: white !important;
-            margin-right: 10px;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .navbar .menu-and-logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar .username {
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar .username i {
-            margin-right: 5px;
-            font-size: 1.2rem;
-        }
-
-        /* Sidebar Styles */
-        .offcanvas {
-            width: 300px;
-            background: linear-gradient(to bottom, #333, #444);
-            color: white;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
-        }
-
-        .offcanvas-header {
-            background: linear-gradient(45deg, #007bff, #0056b3);
-            color: white;
-        }
-
-        .offcanvas-body {
-            padding: 20px 10px;
-        }
-
-        /* Fancy Scrollbar */
-        .offcanvas-body::-webkit-scrollbar {
-            width: 8px;
-        }
-        .offcanvas-body::-webkit-scrollbar-thumb {
-            background-color: #007bff;
-            border-radius: 5px;
-        }
-
-        /* Sidebar Section Heading Styles */
-        .sidebar-section {
-            background-color: #444;
-            color: #ffffff;
-            padding: 15px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            border-radius: 5px;
-        }
-
-        /* Sidebar Menu Link */
-        .sidebar a {
-            text-decoration: none;
-            color: white;
-            padding: 10px 15px;
-            display: flex;
-            align-items: center;
-            border-radius: 4px;
-            margin: 5px 0;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .sidebar a:hover {
-            background-color: #007bff;
-            color: #ffffff;
-            transform: scale(1.05);
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
-
-        .sidebar a i {
-            margin-right: 10px;
-        }
-
-          
         /* Attendance Card */
         .attendance-card {
             background-color: #ffffff;
@@ -134,6 +53,16 @@
             color: #2d3748;
             text-align: center;
             margin-bottom: 20px;
+            animation: pulse 2s infinite; /* Pulsing animation */
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
         }
 
         .form-label {
@@ -181,6 +110,25 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
 
+        .back-button {
+            margin: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #ffffff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
         @media (max-width: 768px) {
             .attendance-card {
                 padding: 30px;
@@ -201,66 +149,13 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <a class="navbar-brand" href="#">Mclons Manpower Services</a>
-        <button class="btn" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMenu">
-            <i class="fas fa-bars"></i>
-        </button>
-    </nav>
+    <!-- Back Button -->
+    <a href="{{ route('admin.attendanceDash') }}" class="back-button fade-in">
+        <i class="fas fa-arrow-left"></i> Back to Attendance Dashboard
+    </a>
 
-       <!-- Offcanvas Sidebar -->
-       <div class="offcanvas offcanvas-start" id="offcanvasMenu">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Menu</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="sidebar">
-                <!-- User Info -->
-                <div class="user-info text-center mb-4">
-                    @auth
-                        <img src="{{ asset('path_to_user_icon.png') }}" alt="User Icon" class="rounded-circle" width="70">
-                        <h5 class="mt-2">{{ Auth::user()->username }}</h5>
-                        <span><i class="fas fa-circle text-success"></i> Online</span>
-                    @else
-                        <img src="{{ asset('path_to_guest_icon.png') }}" alt="Guest Icon" class="rounded-circle" width="70">
-                        <h5 class="mt-2">Guest</h5>
-                        <span><i class="fas fa-circle text-secondary"></i> Offline</span>
-                    @endauth
-                </div>
-
-                <div class="sidebar-section">Reports</div>
-                <a href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-
-                <div class="sidebar-section">Manage</div>
-                <a href="{{ route('admin.attendanceDash') }}"><i class="fas fa-calendar-check"></i> Attendance Dashboard</a>
-                <a href="#employeesSubmenu" data-bs-toggle="collapse" class="d-flex align-items-center">
-                    <i class="fas fa-users"></i> Employees
-                    <i class="fas fa-chevron-right ms-auto"></i>
-                </a>
-                <div class="collapse" id="employeesSubmenu">
-                    <ul class="list-unstyled ps-4">
-                        <li><a href="{{ route('admin.addEmployeeList') }}">Employee List</a></li>
-                        <li><a href="{{ route('admin.overtime') }}">Overtime</a></li>
-                        <li><a href="{{ route('admin.cashadvance') }}">Cash Advance</a></li>
-                        <li><a href="{{ route('admin.schedule') }}">Schedules</a></li>
-                    </ul>
-                </div>
-
-                <a href="{{ route('admin.deduction') }}"><i class="fas fa-dollar-sign"></i> Deductions</a>
-                <a href="{{ route('admin.position') }}"><i class="fas fa-briefcase"></i> Positions</a>
-
-                <div class="sidebar-section">Printables</div>
-                <a href="{{ route('admin.payroll') }}"><i class="fas fa-print"></i> Payroll</a>
-                <a href="{{ route('admin.schedule') }}"><i class="fas fa-clock"></i> Schedule</a>
-            </div>
-        </div>
-    </div>
-
-
-        <!-- Attendance Form -->
-        <div class="attendance-card">
+    <!-- Attendance Form -->
+    <div class="attendance-card fade-in">
         <div id="clock"></div>
         <form action="{{ route('admin.submit') }}" method="post">
             @csrf
@@ -294,6 +189,7 @@
         setInterval(updateClock, 1000);
         updateClock();
     </script>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
